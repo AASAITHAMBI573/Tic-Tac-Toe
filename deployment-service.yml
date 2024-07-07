@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: tic-tac-toe
 spec:
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       app: tic-tac-toe
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: tic-tac-toe
-        image: sevenajay/tic-tac-toe:latest
+        image: aasaithambi5/tic-tac-toe:latest
         ports:
         - containerPort: 3000   # Use port 3000
 
