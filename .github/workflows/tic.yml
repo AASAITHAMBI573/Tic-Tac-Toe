@@ -40,3 +40,28 @@ jobs:
       - name: Trivy FS Scan
         run: |
           trivy fs --format table -o trivy-fs-report.txt .
+
+      - name: Docker build and push
+        run: |
+          # Run commands to build and push Docker images
+          docker build -t tic-tac-toe .
+          docker tag tic-tac-toe aasaithambi5/tic-tac-toe:latest
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          docker push aasaithambi5/tic-tac-toe:latest
+        env:
+          DOCKER_CLI_ACI: 1
+
+  deploy:
+    needs: build
+    runs-on: label-1
+
+    steps:
+      - name: Pull the Docker image
+        run: docker pull aasaithambi5/tic-tac-toe:latest
+    
+      - name: Trivy Image Scan
+        run: |
+          trivy image --format table -o trivy-image-report.txt aasaithambi5/tic-tac-toe:latest
+      
+      - name: Run the container
+        run: docker run -d --name ticgame -p 3000:3000 aasaithambi5/tic-tac-toe:latest
